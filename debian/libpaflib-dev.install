@@ -1,0 +1,3 @@
+usr/include/paf/*.h
+usr/lib/*/libpaf-*.a
+
