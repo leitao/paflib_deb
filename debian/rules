@@ -1,0 +1,65 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_MULTIARCH      ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
+
+# Get flags from dpkg-buildflags
+CPPFLAGS		= $(shell dpkg-buildflags --get CPPFLAGS)
+CFLAGS		  = $(shell dpkg-buildflags --get CFLAGS)
+LDFLAGS		 = $(shell dpkg-buildflags --get LDFLAGS)
+
+build: build-arch build-indep
+
+build-arch: build-arch-stamp
+build-arch-stamp:
+	dh_testdir
+	CFLAGS="$(CPPFLAGS) $(CFLAGS)" LDFLAGS="$(LDFLAGS)" $(MAKE)
+	touch $@
+
+build-indep:
+# We have nothing to do by default.
+
+clean:
+	dh_testdir
+	dh_testroot
+	$(MAKE) clean
+	rm -f *-stamp
+	dh_clean
+
+install: build-indep
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp LIB_DIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install --sourcedir=debian/tmp
+
+# Build architecture-dependent files here.
+binary-arch: build-indep install
+	dh_testdir
+	dh_testroot
+	dh_installdocs
+	dh_installchangelogs Changelog
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+# Build architecture-independent files here.
+binary-indep: build-indep install
+# We have nothing to do by default.
+
+binary: binary-indep binary-arch
+.PHONY: build build-arch build-indep clean binary-indep binary-arch binary install
+
