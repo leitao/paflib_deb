@@ -37,7 +37,7 @@ Description: library which exposes Power Facilities to userspace via an API.
 Package: libpaf-dev
 Architecture: ppc64 ppc64el powerpc
 Section: libdevel
-Depends: libpaf-ebb0 (= ${binary:Version}), libpaf-dsc0 (= ${binary:Version})
+Depends: libpaf-ebb0 (= ${binary:Version}), libpaf-dsc0 (= ${binary:Version}),  ${misc:Depends}
 Description: paflib development files
  PAFLib is a IBM written library which exposes Power Architecture Facilities to
  userspace via an API. This includes the Data Stream Control Register Facility
