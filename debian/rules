@@ -6,3 +6,7 @@
 
 %:
 	dh $@ --parallel --with autoreconf
+
+override_dh_clean:
+	dh_clean
+	rm -fr ebb/test_ebb_save_area_env.sh
